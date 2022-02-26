@@ -100,8 +100,9 @@ $(function () {
             html = `<i class="fas fa-video"></i>`;
             $("#stop_video").toggleClass("background_blue");
             $("#stop_video").html(html)
-    })
+    }
 
+})
 })
 
 peer.on("open", (id) => {
