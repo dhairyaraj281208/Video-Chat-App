@@ -111,7 +111,7 @@ $(function () {
             to: to,
 
         }
-        $.azax({
+        $.ajax({
             url: "/send-mail",
             type: "post",
             data: JSON.stringify(data),
