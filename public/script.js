@@ -103,6 +103,28 @@ $(function () {
     }
 
 })
+
+    $("#invite_button").click(function (e) {
+        const to = prompt("Please enter the email!")
+        let data = {
+            url: "window.locate.href",
+            to: to,
+
+        }
+        $.azax({
+            url: "/send-mail",
+            type: "post",
+            data: JSON.stringify(data),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function(result){
+                alert("Invitation sent! 👌👌")
+            },
+            error: function(result){
+                console.log(result.responseJSON)
+            }
+        })
+    })
 })
 
 peer.on("open", (id) => {
