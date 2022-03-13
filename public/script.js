@@ -7,45 +7,50 @@ var peer = new Peer(undefined, {
 });
 
 const user = prompt("Enter your name");
-const myVideo = document.createElement("video")
-myVideo.muted = true
 
-let myStream
+const myVideo = document.createElement("video");
+myVideo.muted = true;
+
+let myStream;
+
 navigator.mediaDevices
     .getUserMedia({
         audio: true,
-        video: true
+        video: true,
     })
     .then((stream) => {
         myStream = stream;
-        addVideoStream(myVideo, stream)
+        addVideoStream(myVideo, stream);
 
-        socket.on("User-Connected", (userId) => {
+        socket.on("user-connected", (userId) => {
             connectToNewUser(userId, stream);
-        })
-        peer.on("call", (call) => {
-            call.answer(stream)
-            const video = document.createElement("video")
-            call.on("stream", (userVideoStream) => {
-                addVideoStream(video, userVideoStream)
-            })
-        })
-    })
-function connectToNewUser(userId, stream){
-    const call = peer.call(userId, stream)
-    const video = document.createElement("video")
-    call.on("stream", (userVideoStream) => {
-        addVideoStream(video, userVideoStream)
-    })
-}
+        });
 
-function addVideoStream(video, stream){
+        peer.on("call", (call) => {
+            call.answer(stream);
+            const video = document.createElement("video");
+            call.on("stream", (userVideoStream) => {
+                addVideoStream(video, userVideoStream);
+            });
+        });
+    })
+
+function connectToNewUser(userId, stream) {
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
+    call.on("stream", (userVideoStream) => {
+        addVideoStream(video, userVideoStream);
+    });
+};
+
+function addVideoStream(video, stream) {
     video.srcObject = stream;
     video.addEventListener("loadedmetadata", () => {
-        video.play()
+        video.play();
         $("#video_grid").append(video)
-    })
-}
+    });
+};
+
 $(function () {
     $("#show_chat").click(function () {
         $(".left-window").css("display", "none")
@@ -72,44 +77,41 @@ $(function () {
         }
     })
 
-    $("#mute_button").click(function (e){
-        const enabled = myStream.getAudioTracks()[0].enabled
+    $("#mute_button").click(function () {
+        const enabled = myStream.getAudioTracks()[0].enabled;
         if (enabled) {
-            myStream.getAudioTracks()[0].enabled = false
+            myStream.getAudioTracks()[0].enabled = false;
             html = `<i class="fas fa-microphone-slash"></i>`;
             $("#mute_button").toggleClass("background_red");
             $("#mute_button").html(html)
-        }
-        else{
-            myStream.getAudioTracks()[0].enabled = true
+        } else {
+            myStream.getAudioTracks()[0].enabled = true;
             html = `<i class="fas fa-microphone"></i>`;
-            $("#mute_button").toggleClass("background_blue");
+            $("#mute_button").toggleClass("background_red");
             $("#mute_button").html(html)
         }
     })
-    $("#stop_video").click(function (e){
-        const enabled = myStream.getVideoTracks()[0].enabled
+
+    $("#stop_video").click(function () {
+        const enabled = myStream.getVideoTracks()[0].enabled;
         if (enabled) {
-            myStream.getVideoTracks()[0].enabled = false
+            myStream.getVideoTracks()[0].enabled = false;
             html = `<i class="fas fa-video-slash"></i>`;
             $("#stop_video").toggleClass("background_red");
             $("#stop_video").html(html)
-        }
-        else{
-            myStream.getVideoTracks()[0].enabled = true
+        } else {
+            myStream.getVideoTracks()[0].enabled = true;
             html = `<i class="fas fa-video"></i>`;
-            $("#stop_video").toggleClass("background_blue");
+            $("#stop_video").toggleClass("background_red");
             $("#stop_video").html(html)
-    }
+        }
+    })
 
-})
-
-    $("#invite_button").click(function (e) {
-        const to = prompt("Please enter the email!")
+    $("#invite_button").click(function () {
+        const to = prompt("Enter the email address")
         let data = {
-            url: "window.locate.href",
-            to: to,
-
+            url: window.location.href,
+            to: to
         }
         $.ajax({
             url: "/send-mail",
@@ -117,14 +119,15 @@ $(function () {
             data: JSON.stringify(data),
             dataType: 'json',
             contentType: 'application/json',
-            success: function(result){
-                alert("Invitation sent! 👌👌")
+            success: function (result) {
+                alert("Invite sent!")
             },
-            error: function(result){
+            error: function (result) {
                 console.log(result.responseJSON)
             }
         })
     })
+
 })
 
 peer.on("open", (id) => {

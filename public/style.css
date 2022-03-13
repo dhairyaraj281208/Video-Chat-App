@@ -49,7 +49,6 @@
 .messages {
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
 }
 
 .message {
@@ -101,14 +100,29 @@
   color: #fff;
 }
 
-.background_red{
+#video_grid {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--main-dark);
+}
+
+video {
+  height: 300px;
+  border-radius: 1rem;
+  margin: 0.5rem;
+  width: 400px;
+  object-fit: cover;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+}
+
+.background_red {
   background-color: #f6484a;
 }
-
-.background_blue{
-  background-color: #2031ce;
-}
-
 
 @media (max-width: 700px) {
   #show_chat {
